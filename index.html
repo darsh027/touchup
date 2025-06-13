@@ -4,12 +4,56 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TouchUP - Your Football Matchmaker & Skills Coach</title>
-    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+   
+    <!-- Add loading states and error handling for dependencies -->
+    <script>
+        window.onerror = function(msg, url, lineNo, columnNo, error) {
+            console.error('Error: ' + msg + '\nURL: ' + url + '\nLine: ' + lineNo + '\nColumn: ' + columnNo + '\nError object: ' + JSON.stringify(error));
+            return false;
+        };
+    </script>
+
+
+    <!-- Load dependencies with fallbacks -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
+   
+    <!-- Add loading indicator -->
+    <style>
+        #loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+       
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+       
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Poppins', sans-serif;
+        }
+
+
+        #root {
+            min-height: 100vh;
+        }
+    </style>
+   
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+   
     <script>
         tailwind.config = {
             theme: {
@@ -28,20 +72,61 @@
             }
         }
     </script>
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        h1, h2, h3, h4, h5, h6 {
-            font-family: 'Poppins', sans-serif;
-        }
-    </style>
 </head>
 <body class="bg-gray-100">
+    <!-- Add loading indicator -->
+    <div id="loading">
+        <div class="text-deep-green text-2xl font-bold">Loading TouchUP...</div>
+    </div>
+
+
     <div id="root"></div>
 
 
     <script type="text/babel">
+        // Add error boundary component
+        class ErrorBoundary extends React.Component {
+            constructor(props) {
+                super(props);
+                this.state = { hasError: false };
+            }
+
+
+            static getDerivedStateFromError(error) {
+                return { hasError: true };
+            }
+
+
+            componentDidCatch(error, errorInfo) {
+                console.error('Error:', error);
+                console.error('Error Info:', errorInfo);
+            }
+
+
+            render() {
+                if (this.state.hasError) {
+                    return (
+                        <div className="min-h-screen flex items-center justify-center bg-gray-100">
+                            <div className="text-center p-8">
+                                <h1 className="text-2xl font-bold text-deep-green mb-4">Something went wrong</h1>
+                                <p className="text-soil-brown mb-4">Please try refreshing the page</p>
+                                <button
+                                    onClick={() => window.location.reload()}
+                                    className="bg-deep-green text-white px-6 py-2 rounded-lg hover:bg-deep-green/90 transition"
+                                >
+                                    Refresh Page
+                                </button>
+                            </div>
+                        </div>
+                    );
+                }
+
+
+                return this.props.children;
+            }
+        }
+
+
         // Navigation Component
         const Navigation = () => {
             const [isOpen, setIsOpen] = React.useState(false);
@@ -58,12 +143,11 @@
                            
                             {/* Desktop Navigation */}
                             <div className="hidden md:flex items-center space-x-8">
-                                <a href="#" className="text-soil-brown hover:text-deep-green transition">Home</a>
                                 <a href="#about" className="text-soil-brown hover:text-deep-green transition">About Us</a>
                                 <a href="#courses" className="text-soil-brown hover:text-deep-green transition">Courses</a>
                                 <a href="#upload" className="text-soil-brown hover:text-deep-green transition">Upload</a>
-                                <a href="#watch" className="text-soil-brown hover:text-deep-green transition">Watch</a>
-                                <a href="#chatroom" className="text-soil-brown hover:text-deep-green transition">Chatroom</a>
+                                <a href="#ai-detector" className="text-soil-brown hover:text-deep-green transition">AI Analysis</a>
+                                <a href="#help" className="text-soil-brown hover:text-deep-green transition">Help Center</a>
                             </div>
 
 
@@ -90,12 +174,11 @@
                     {isOpen && (
                         <div className="md:hidden">
                             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                                <a href="#" className="block px-3 py-2 text-soil-brown hover:text-deep-green transition">Home</a>
                                 <a href="#about" className="block px-3 py-2 text-soil-brown hover:text-deep-green transition">About Us</a>
                                 <a href="#courses" className="block px-3 py-2 text-soil-brown hover:text-deep-green transition">Courses</a>
                                 <a href="#upload" className="block px-3 py-2 text-soil-brown hover:text-deep-green transition">Upload</a>
-                                <a href="#watch" className="block px-3 py-2 text-soil-brown hover:text-deep-green transition">Watch</a>
-                                <a href="#chatroom" className="block px-3 py-2 text-soil-brown hover:text-deep-green transition">Chatroom</a>
+                                <a href="#ai-detector" className="block px-3 py-2 text-soil-brown hover:text-deep-green transition">AI Analysis</a>
+                                <a href="#help" className="block px-3 py-2 text-soil-brown hover:text-deep-green transition">Help Center</a>
                             </div>
                         </div>
                     )}
@@ -150,28 +233,6 @@
                                 Our mission is your vision
                             </p>
                         </div>
-
-
-                        {/* Team Section */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                            {teamMembers.map((member, index) => (
-                                <div key={index} className="bg-white rounded-lg overflow-hidden shadow-lg transform hover:scale-105 transition duration-300">
-                                    <div className="relative h-64">
-                                        <img
-                                            src={member.image}
-                                            alt={member.name}
-                                            className="w-full h-full object-cover"
-                                        />
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                                    </div>
-                                    <div className="p-6">
-                                        <h3 className="text-xl font-bold text-deep-green mb-2">{member.name}</h3>
-                                        <p className="text-clean-yellow font-semibold mb-3">{member.role}</p>
-                                        <p className="text-soil-brown">{member.bio}</p>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
                     </div>
                 </section>
             );
@@ -189,9 +250,32 @@
             const [showChatbot, setShowChatbot] = React.useState(false);
 
 
+            const faqs = [
+                {
+                    question: "How does the AI skill analysis work?",
+                    answer: "Our AI analyzes your uploaded videos from multiple angles to provide detailed feedback on your technique, form, and areas for improvement. The system compares your movements against professional standards and provides actionable insights."
+                },
+                {
+                    question: "What age groups can use TouchUP?",
+                    answer: "TouchUP is designed for players aged 13-25. We have specific features and content tailored for different age groups to ensure appropriate training and matching."
+                },
+                {
+                    question: "How do I find training partners?",
+                    answer: "You can use our matchmaking system to find players of similar skill levels and age groups in your area. The system considers your preferences and availability to suggest compatible training partners."
+                },
+                {
+                    question: "What video formats are supported?",
+                    answer: "We support MP4, MOV, and AVI formats. Videos should be clear and well-lit, ideally recorded from multiple angles for the best analysis results."
+                },
+                {
+                    question: "Is my personal information secure?",
+                    answer: "Yes, we take privacy seriously. All personal information is encrypted and stored securely. We never share your data with third parties without your consent."
+                }
+            ];
+
+
             const handleSubmit = (e) => {
                 e.preventDefault();
-                // Send email to 223139@ais.edu.hk
                 const mailtoLink = `mailto:223139@ais.edu.hk?subject=Contact Form Submission&body=Name: ${formData.name}%0D%0AEmail: ${formData.email}%0D%0AMessage: ${formData.message}`;
                 window.location.href = mailtoLink;
                 setFormData({ name: '', email: '', message: '' });
@@ -239,6 +323,36 @@
                                         </div>
                                     </div>
                                 )}
+
+
+                                <div className="space-y-4">
+                                    {faqs.map((faq, index) => (
+                                        <div
+                                            key={index}
+                                            className="border border-soil-brown/20 rounded-lg overflow-hidden"
+                                        >
+                                            <button
+                                                className="w-full px-6 py-4 text-left bg-white hover:bg-deep-green/5 transition flex justify-between items-center"
+                                                onClick={() => setActiveFaq(activeFaq === index ? null : index)}
+                                            >
+                                                <span className="font-medium text-soil-brown">{faq.question}</span>
+                                                <svg
+                                                    className={`w-5 h-5 transform transition-transform ${activeFaq === index ? 'rotate-180' : ''}`}
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    stroke="currentColor"
+                                                >
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                                </svg>
+                                            </button>
+                                            {activeFaq === index && (
+                                                <div className="px-6 py-4 bg-deep-green/5">
+                                                    <p className="text-soil-brown">{faq.answer}</p>
+                                                </div>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
 
 
@@ -304,327 +418,8 @@
                                         Send Message
                                     </button>
                                 </form>
-
-
-                                {/* Quick Links */}
-                                <div className="mt-8">
-                                    <h4 className="text-lg font-semibold text-soil-brown mb-4">Quick Links</h4>
-                                    <div className="flex flex-wrap gap-4">
-                                        <a href="#" className="text-deep-green hover:text-deep-green/80">Terms of Service</a>
-                                        <a href="#" className="text-deep-green hover:text-deep-green/80">Privacy Policy</a>
-                                        <a href="#" className="text-deep-green hover:text-deep-green/80">Refund Policy</a>
-                                    </div>
-                                </div>
                             </div>
                         </div>
-                    </div>
-                </section>
-            );
-        };
-
-
-        // Watch Videos Section Component
-        const WatchVideos = () => {
-            const [selectedSkill, setSelectedSkill] = React.useState('all');
-            const [hoveredVideo, setHoveredVideo] = React.useState(null);
-
-
-            const skills = [
-                { id: 'all', name: 'All Skills' },
-                { id: 'dribbling', name: 'Dribbling' },
-                { id: 'shooting', name: 'Shooting' },
-                { id: 'passing', name: 'Passing' },
-                { id: 'freestyle', name: 'Freestyle' }
-            ];
-
-
-            const videos = [
-                {
-                    id: 1,
-                    title: "Advanced Dribbling Techniques",
-                    skill: "dribbling",
-                    thumbnail: "https://images.unsplash.com/photo-1579952363873-27f3bade9f55?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-                    views: "2.5K",
-                    duration: "5:30"
-                },
-                {
-                    id: 2,
-                    title: "Perfect Shooting Form",
-                    skill: "shooting",
-                    thumbnail: "https://images.unsplash.com/photo-1579952363873-27f3bade9f55?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-                    views: "1.8K",
-                    duration: "4:15"
-                },
-                {
-                    id: 3,
-                    title: "Passing Masterclass",
-                    skill: "passing",
-                    thumbnail: "https://images.unsplash.com/photo-1579952363873-27f3bade9f55?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-                    views: "3.2K",
-                    duration: "6:45"
-                },
-                {
-                    id: 4,
-                    title: "Freestyle Tricks",
-                    skill: "freestyle",
-                    thumbnail: "https://images.unsplash.com/photo-1579952363873-27f3bade9f55?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-                    views: "4.1K",
-                    duration: "7:20"
-                }
-            ];
-
-
-            const filteredVideos = selectedSkill === 'all'
-                ? videos
-                : videos.filter(video => video.skill === selectedSkill);
-
-
-            return (
-                <section id="watch" className="py-20 bg-gradient-to-b from-soil-brown/10 to-deep-green/10">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <h2 className="text-4xl font-bold text-deep-green text-center mb-12">Watch & Learn</h2>
-
-
-                        {/* Skill Filter */}
-                        <div className="flex flex-wrap justify-center gap-4 mb-12">
-                            {skills.map(skill => (
-                                <button
-                                    key={skill.id}
-                                    onClick={() => setSelectedSkill(skill.id)}
-                                    className={`px-6 py-2 rounded-full transition ${
-                                        selectedSkill === skill.id
-                                            ? 'bg-deep-green text-white'
-                                            : 'bg-white text-soil-brown hover:bg-deep-green/10'
-                                    }`}
-                                >
-                                    {skill.name}
-                                </button>
-                            ))}
-                        </div>
-
-
-                        {/* Video Grid */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                            {filteredVideos.map(video => (
-                                <div
-                                    key={video.id}
-                                    className="bg-white rounded-lg overflow-hidden shadow-lg transform transition duration-300 hover:scale-105"
-                                    onMouseEnter={() => setHoveredVideo(video.id)}
-                                    onMouseLeave={() => setHoveredVideo(null)}
-                                >
-                                    <div className="relative">
-                                        <img
-                                            src={video.thumbnail}
-                                            alt={video.title}
-                                            className="w-full h-48 object-cover"
-                                        />
-                                        <div className="absolute bottom-2 right-2 bg-black/80 text-white px-2 py-1 rounded text-sm">
-                                            {video.duration}
-                                        </div>
-                                        {hoveredVideo === video.id && (
-                                            <div className="absolute inset-0 bg-deep-green/50 flex items-center justify-center">
-                                                <button className="bg-clean-yellow text-deep-green px-6 py-2 rounded-full font-semibold hover:bg-yellow-400 transition">
-                                                    Watch Now
-                                                </button>
-                                            </div>
-                                        )}
-                                    </div>
-                                    <div className="p-4">
-                                        <h3 className="font-semibold text-soil-brown mb-2">{video.title}</h3>
-                                        <div className="flex items-center text-sm text-soil-brown/60">
-                                            <span>{video.views} views</span>
-                                            <span className="mx-2">•</span>
-                                            <span className="capitalize">{video.skill}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-
-
-                        {/* Load More Button */}
-                        <div className="text-center mt-12">
-                            <button className="bg-deep-green text-white px-8 py-3 rounded-full hover:bg-deep-green/90 transition">
-                                Load More Videos
-                            </button>
-                        </div>
-                    </div>
-                </section>
-            );
-        };
-
-
-        // Upload Section Component
-        const Upload = () => {
-            const [selectedSkill, setSelectedSkill] = React.useState('');
-            const [enableAI, setEnableAI] = React.useState(true);
-            const [uploadProgress, setUploadProgress] = React.useState({});
-            const [isUploading, setIsUploading] = React.useState(false);
-
-
-            const skills = [
-                { id: 'dribbling', name: 'Dribbling' },
-                { id: 'shooting', name: 'Shooting' },
-                { id: 'passing', name: 'Passing' },
-                { id: 'freestyle', name: 'Freestyle' }
-            ];
-
-
-            const angles = [
-                { id: 'front', name: 'Front View', icon: '🎥' },
-                { id: 'back', name: 'Back View', icon: '🎥' },
-                { id: 'left', name: 'Left Side', icon: '🎥' },
-                { id: 'right', name: 'Right Side', icon: '🎥' }
-            ];
-
-
-            const handleFileSelect = (angleId, event) => {
-                const file = event.target.files[0];
-                if (file) {
-                    // Simulate upload progress
-                    setUploadProgress(prev => ({
-                        ...prev,
-                        [angleId]: 0
-                    }));
-
-
-                    let progress = 0;
-                    const interval = setInterval(() => {
-                        progress += 10;
-                        setUploadProgress(prev => ({
-                            ...prev,
-                            [angleId]: progress
-                        }));
-
-
-                        if (progress >= 100) {
-                            clearInterval(interval);
-                        }
-                    }, 200);
-                }
-            };
-
-
-            const handleSubmit = (e) => {
-                e.preventDefault();
-                setIsUploading(true);
-
-
-                // Simulate upload completion
-                setTimeout(() => {
-                    setIsUploading(false);
-                    // Reset form
-                    setSelectedSkill('');
-                    setUploadProgress({});
-                }, 2000);
-            };
-
-
-            return (
-                <section id="upload" className="py-20 bg-white">
-                    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <h2 className="text-4xl font-bold text-deep-green text-center mb-12">Upload Your Skills</h2>
-
-
-                        <form onSubmit={handleSubmit} className="space-y-8">
-                            {/* Skill Selection */}
-                            <div>
-                                <label className="block text-lg font-semibold text-soil-brown mb-4">
-                                    Select Skill to Upload
-                                </label>
-                                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                    {skills.map(skill => (
-                                        <button
-                                            key={skill.id}
-                                            type="button"
-                                            onClick={() => setSelectedSkill(skill.id)}
-                                            className={`p-4 rounded-lg border-2 transition ${
-                                                selectedSkill === skill.id
-                                                    ? 'border-deep-green bg-deep-green/10 text-deep-green'
-                                                    : 'border-soil-brown/20 hover:border-deep-green/50'
-                                            }`}
-                                        >
-                                            {skill.name}
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-
-
-                            {/* Video Upload Grid */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                {angles.map(angle => (
-                                    <div
-                                        key={angle.id}
-                                        className="border-2 border-dashed border-soil-brown/20 rounded-lg p-6 hover:border-deep-green/50 transition"
-                                    >
-                                        <div className="text-center">
-                                            <span className="text-4xl mb-2 block">{angle.icon}</span>
-                                            <h3 className="font-semibold text-soil-brown mb-2">{angle.name}</h3>
-                                            <input
-                                                type="file"
-                                                accept="video/*"
-                                                onChange={(e) => handleFileSelect(angle.id, e)}
-                                                className="hidden"
-                                                id={`upload-${angle.id}`}
-                                            />
-                                            <label
-                                                htmlFor={`upload-${angle.id}`}
-                                                className="inline-block bg-deep-green/10 text-deep-green px-4 py-2 rounded-full cursor-pointer hover:bg-deep-green/20 transition"
-                                            >
-                                                Choose File
-                                            </label>
-                                            {uploadProgress[angle.id] > 0 && (
-                                                <div className="mt-2">
-                                                    <div className="w-full bg-soil-brown/20 rounded-full h-2">
-                                                        <div
-                                                            className="bg-deep-green h-2 rounded-full transition-all duration-300"
-                                                            style={{ width: `${uploadProgress[angle.id]}%` }}
-                                                        ></div>
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-
-
-                            {/* AI Analysis Toggle */}
-                            <div className="flex items-center justify-between p-4 bg-deep-green/5 rounded-lg">
-                                <div>
-                                    <h3 className="font-semibold text-soil-brown">Enable AI Analysis</h3>
-                                    <p className="text-sm text-soil-brown/60">
-                                        Get detailed feedback on your technique and form
-                                    </p>
-                                </div>
-                                <label className="relative inline-flex items-center cursor-pointer">
-                                    <input
-                                        type="checkbox"
-                                        checked={enableAI}
-                                        onChange={() => setEnableAI(!enableAI)}
-                                        className="sr-only peer"
-                                    />
-                                    <div className="w-11 h-6 bg-soil-brown/20 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-deep-green"></div>
-                                </label>
-                            </div>
-
-
-                            {/* Submit Button */}
-                            <div className="text-center">
-                                <button
-                                    type="submit"
-                                    disabled={isUploading || !selectedSkill}
-                                    className={`px-8 py-3 rounded-full font-semibold transition ${
-                                        isUploading || !selectedSkill
-                                            ? 'bg-soil-brown/20 text-soil-brown/60 cursor-not-allowed'
-                                            : 'bg-deep-green text-white hover:bg-deep-green/90'
-                                    }`}
-                                >
-                                    {isUploading ? 'Uploading...' : 'Upload Videos'}
-                                </button>
-                            </div>
-                        </form>
                     </div>
                 </section>
             );
@@ -657,32 +452,11 @@
                         "Follow through towards your target",
                         "Keep your head down during contact"
                     ]
-                },
-                {
-                    id: 3,
-                    title: "Passing Mastery",
-                    description: "Develop accurate passing and receiving skills",
-                    videoUrl: "https://www.youtube.com/embed/example3",
-                    thumbnail: "https://images.unsplash.com/photo-1579952363873-27f3bade9f55?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-                    tips: [
-                        "Use the inside of your foot for accuracy",
-                        "Look up before passing",
-                        "Pass to where your teammate will be"
-                    ]
-                },
-                {
-                    id: 4,
-                    title: "Freestyle Basics",
-                    description: "Start your journey into freestyle football",
-                    videoUrl: "https://www.youtube.com/embed/example4",
-                    thumbnail: "https://images.unsplash.com/photo-1579952363873-27f3bade9f55?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-                    tips: [
-                        "Start with basic juggling",
-                        "Practice with both feet",
-                        "Focus on control before tricks"
-                    ]
                 }
             ];
+
+
+            const [hoveredCourse, setHoveredCourse] = React.useState(null);
 
 
             return (
@@ -695,6 +469,8 @@
                                 <div
                                     key={course.id}
                                     className="bg-white rounded-lg overflow-hidden shadow-lg transform hover:scale-105 transition duration-300"
+                                    onMouseEnter={() => setHoveredCourse(course.id)}
+                                    onMouseLeave={() => setHoveredCourse(null)}
                                 >
                                     <div className="relative h-48">
                                         <img
@@ -707,20 +483,21 @@
                                             <h3 className="text-xl font-bold text-white mb-1">{course.title}</h3>
                                             <p className="text-white/80 text-sm">{course.description}</p>
                                         </div>
+                                        {hoveredCourse === course.id && (
+                                            <div className="absolute inset-0 bg-deep-green/50 flex items-center justify-center">
+                                                <a
+                                                    href={course.videoUrl}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="bg-clean-yellow text-deep-green px-6 py-2 rounded-full font-semibold hover:bg-yellow-400 transition"
+                                                >
+                                                    Watch Now
+                                                </a>
+                                            </div>
+                                        )}
                                     </div>
                                    
                                     <div className="p-6">
-                                        <div className="aspect-w-16 aspect-h-9 mb-4">
-                                            <iframe
-                                                src={course.videoUrl}
-                                                title={course.title}
-                                                frameBorder="0"
-                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                                allowFullScreen
-                                                className="w-full h-full rounded-lg"
-                                            ></iframe>
-                                        </div>
-                                       
                                         <div className="mb-6">
                                             <h4 className="font-semibold text-soil-brown mb-3">Key Tips:</h4>
                                             <ul className="space-y-2">
@@ -732,13 +509,6 @@
                                                 ))}
                                             </ul>
                                         </div>
-                                       
-                                        <button className="w-full bg-deep-green text-white py-3 rounded-lg hover:bg-deep-green/90 transition flex items-center justify-center gap-2">
-                                            <span>Practice with a Friend</span>
-                                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                                            </svg>
-                                        </button>
                                     </div>
                                 </div>
                             ))}
@@ -937,22 +707,48 @@
         // Main App Component
         const App = () => {
             return (
-                <div className="min-h-screen">
-                    <Navigation />
-                    <Hero />
-                    <AboutUs />
-                    <Courses />
-                    <Upload />
-                    <AISkillDetector />
-                    <HelpCenter />
-                </div>
+                <ErrorBoundary>
+                    <div className="min-h-screen">
+                        <Navigation />
+                        <Hero />
+                        <AboutUs />
+                        <Courses />
+                        <AISkillDetector />
+                        <HelpCenter />
+                    </div>
+                </ErrorBoundary>
             );
         };
 
 
-        // Render the app
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
+        // Add initialization check
+        function initializeApp() {
+            try {
+                const root = ReactDOM.createRoot(document.getElementById('root'));
+                root.render(<App />);
+               
+                // Hide loading indicator
+                const loadingElement = document.getElementById('loading');
+                if (loadingElement) {
+                    loadingElement.style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Failed to initialize app:', error);
+                document.getElementById('loading').innerHTML = `
+                    <div class="text-red-500 text-2xl font-bold">
+                        Failed to load TouchUP. Please refresh the page.
+                    </div>
+                `;
+            }
+        }
+
+
+        // Initialize when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeApp);
+        } else {
+            initializeApp();
+        }
     </script>
 </body>
 </html>
